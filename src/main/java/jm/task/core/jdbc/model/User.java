@@ -1,12 +1,15 @@
 package jm.task.core.jdbc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jm.task.core.jdbc.util.Util;
 
+import javax.persistence.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+@Entity
 @Table
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -28,35 +31,107 @@ public class User {
         this.age = age;
     }
 
-    public Long getId() {
-        return id;
+    public long getId() throws SQLException {
+        long value = 0;
+        try {
+            ResultSet rs = Util.getCon().executeQuery("SELECT id FROM users WHERE firstName = '" + name + "'");
+            rs.next();
+            value = rs.getInt("id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
+        return value;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        try {
+            Util.getCon().execute("UPDATE users SET id = '" + id + "' where firstName = '" + name + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
     }
 
     public String getName() {
+        String name = null;
+        try {
+            ResultSet rs = Util.getCon().executeQuery("SELECT firstName FROM users WHERE id = '" + getId() + "'");
+            rs.next();
+            name = rs.getString("firstName");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        try {
+            Util.getCon().execute("UPDATE users SET firstName = '" + name + "' where id = '" + getId() + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
     }
 
     public String getLastName() {
-        return lastName;
+        String lname = null;
+        try {
+            ResultSet rs = Util.getCon().executeQuery("SELECT lastName FROM users WHERE id = '" + getId() + "'");
+            rs.next();
+            lname = rs.getString("lastName");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
+        return lname;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        try {
+            Util.getCon().execute("UPDATE users SET lastName = '" + name + "' where id = '" + getId() + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
     }
 
     public Byte getAge() {
-        return age;
+        Byte bage = 0;
+        try {
+            ResultSet rs = Util.getCon().executeQuery("SELECT age FROM users WHERE id = '" + getId() + "'");
+            rs.next();
+            bage = (byte)rs.getInt("age");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
+        return bage;
     }
 
     public void setAge(Byte age) {
-        this.age = age;
+        try {
+            Util.getCon().execute("UPDATE users SET age = '" + (int)age + "' where id = '" + getId() + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Пользователя не существует");
+        }
+    }
+
+    @Override
+    public String toString() {
+        long tid = 0;
+        try {
+            tid = getId();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return "User{" +
+                "id=" + tid +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

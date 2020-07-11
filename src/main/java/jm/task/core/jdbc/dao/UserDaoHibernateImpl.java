@@ -1,17 +1,20 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import org.hibernate.Hibernate;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
-
+import jm.task.core.jdbc.util.*;
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
-
     }
 
 
     @Override
     public void createUsersTable() {
+
 
     }
 

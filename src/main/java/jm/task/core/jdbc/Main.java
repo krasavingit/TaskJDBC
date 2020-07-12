@@ -20,9 +20,8 @@ public class Main {
         u1.saveUser("Petr","Geter",(byte)44);
         u1.saveUser("Ivan","Seter",(byte)33);
         u1.saveUser("test","test",(byte)1);
-        Iterator<User> it = u1.getAllUsers().iterator();
-        while (it.hasNext()){
-            System.out.println(it.next().toString());
+        for (User user : u1.getAllUsers()) {
+            System.out.println(user.toString());
         }
         u1.cleanUsersTable();
         u1.dropUsersTable();

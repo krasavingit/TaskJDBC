@@ -4,10 +4,7 @@ import jm.task.core.jdbc.Main;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,42 +18,29 @@ public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
     }
 
-    public void createUsersTable() {
-            try {
-                Util.getCon().execute("CREATE TABLE users ( id int PRIMARY KEY AUTO_INCREMENT, firstName VARCHAR(60), lastName VARCHAR(60), age int)");
-                System.out.println("Таблица users успешно создана");
-            } catch (SQLException e) {
-                System.out.println("Таблица уже существует");
-                e.printStackTrace();
-            }
+    public void createUsersTable() throws SQLException {
+        Util.statement.execute("CREATE TABLE IF NOT EXISTS users ( id int PRIMARY KEY AUTO_INCREMENT, firstName VARCHAR(60), lastName VARCHAR(60), age int)");
+        System.out.println("Таблица users успешно создана");
     }
 
 
     public void dropUsersTable() throws SQLException {
-        ResultSet rs = Util.getCon().executeQuery("SHOW TABLES");
-        if (rs.next()) {
-            String getTableName = rs.getString("Tables_in_new_schema");
-            if (getTableName.contains("users")) {
-                Util.getCon().execute("DROP TABLE users");
-                System.out.println("Таблица users удалена");
-            }
-        } else {
-            System.out.println("Нечего удалять");
-        }
+        Util.statement.execute("DROP TABLE IF EXISTS users");
+        System.out.println("Таблица удалена");
     }
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
-        Util.getCon().execute(
+        Util.statement.execute(
                 "INSERT INTO users (firstName, lastName, age) VALUES ('"+ name +"','"+ lastName +"','"+ age +"')");
         System.out.println("User с именем " + name + " добавлен в базу данных");
     }
 
     public void removeUserById(long id) throws SQLException {
-        Util.getCon().execute("DELETE FROM users where id = '"+ id +"'");
+        Util.statement.execute("DELETE FROM users where id = '"+ id +"'");
     }
 
     public List<User> getAllUsers() throws SQLException {
-        ResultSet rs = Util.getCon().executeQuery("SELECT * FROM users");
+        ResultSet rs = Util.statement.executeQuery("SELECT * FROM users");
         List<User> list = new ArrayList<>();
         Supplier<User> supplier = () -> {
             String name = null;
@@ -78,10 +62,12 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() throws SQLException {
-        if(getAllUsers().size() == 0){
+        ResultSet rs = Util.statement.executeQuery("SELECT COUNT(*) as count FROM users");
+        rs.next();
+        if(rs.getInt("count") == 0){
             System.out.println("Ни одного пользователя не существует");
         } else {
-            Util.getCon().execute("DELETE FROM users");
+            Util.statement.execute("DELETE FROM users");
         }
     }
 }

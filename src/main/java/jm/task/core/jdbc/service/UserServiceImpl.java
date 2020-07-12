@@ -12,28 +12,28 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class UserServiceImpl implements UserService {
-    UserDaoJDBCImpl u1 = new UserDaoJDBCImpl();
+    UserDaoJDBCImpl checker = new UserDaoJDBCImpl();
     public void createUsersTable() throws SQLException {
-        u1.createUsersTable();
+        checker.createUsersTable();
     }
 
     public void dropUsersTable() throws SQLException {
-        u1.dropUsersTable();
+        checker.dropUsersTable();
     }
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
-        u1.saveUser(name,lastName,age);
+        checker.saveUser(name,lastName,age);
     }
 
     public void removeUserById(long id) throws SQLException {
-        u1.removeUserById(id);
+        checker.removeUserById(id);
     }
 
     public List<User> getAllUsers() throws SQLException {
-        return u1.getAllUsers();
+        return checker.getAllUsers();
     }
 
     public void cleanUsersTable() throws SQLException {
-        u1.cleanUsersTable();
+        checker.cleanUsersTable();
     }
 }
